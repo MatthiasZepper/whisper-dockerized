@@ -32,8 +32,10 @@ if model_name in allowed_models:
 elif model_name == "all":
     for model in allowed_models:
         cache_model(model)
+    os.environ["WHISPER_MODEL"] = "medium"  # choose a single default model
 elif model_name == "all.en":
     for model in list(filter(lambda x: ".en" in x, allowed_models)):
         cache_model(model)
+    os.environ["WHISPER_MODEL"] = "medium.en"
 else:
     print("Info: Docker image was built not including any models.")
