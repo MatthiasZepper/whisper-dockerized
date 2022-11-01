@@ -3,13 +3,24 @@ import torch
 import whisper
 
 # allowed model specifications
-allowed_models = {"tiny", "tiny.en", "base.en", "base", "medium", "medium.en", "large"}
+allowed_models = {
+    "tiny",
+    "tiny.en",
+    "base.en",
+    "base",
+    "small.en",
+    "small",
+    "medium",
+    "medium.en",
+    "large",
+}
 
 # if nothing is specified, default to base
 model_name = os.getenv("WHISPER_MODEL", "base")
 
 
 def cache_model(model_to_load):
+    print(f"Adding the {model_to_load} model to the container.")
     if torch.cuda.is_available():
         whisper.load_model(model_to_load).cuda()
     else:
