@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       imagetype:
-        description: 'Build image'
+        description: 'Build which image?'
         required: false
         default: 'cpu'
         type: choice
@@ -29,7 +29,7 @@ on:
         - 'all'
         - 'all.en'
       tag:
-        description: 'Optionally specify a custom tag'
+        description: 'Specify a custom tag?'
         required: false
         default: 'latest'
         type: string
@@ -85,4 +85,4 @@ jobs:
             ghcr.io/${{ env.REPO_LOWERCASE }}-${{ inputs.imagetype }}:${{ inputs.tag }}
           build-args: |
             WHISPER_MODEL=${{ inputs.cachemodel }}
-          file: ${{context}}/${{ steps.dockerfilechooser.outputs.value }}
+          file: ${{ steps.dockerfilechooser.outputs.value }}

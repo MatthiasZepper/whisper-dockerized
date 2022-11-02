@@ -67,6 +67,12 @@ docker build . -f Dockerfile.gpu -t whisper_dockerized_gpu
 
 ### Running on Github Actions
 
+This repository also contains a Github Action workflow to build the container image.
+
+To run the workflow successfully, you need to fork the repository and create your own repository secrets. Navigate to *Settings* and then to *Secrets*, where you need to create the two secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`. Both will be needed by the workflow to upload the finished container image to Docker Hub.  
+
+The workflow can be dispatched manually in the *Actions* tab. Choose the desired settings in the dialogue and launch the workflow run.
+
 ## Command-line usage
 
 To run the containerized version of the Whisper model, invoke the container like so
