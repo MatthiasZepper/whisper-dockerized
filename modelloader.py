@@ -16,7 +16,8 @@ allowed_models = {
 }
 
 # if nothing is specified, default to base
-model_name = os.getenv("WHISPER_MODEL", "base")
+model_name = os.getenv("WHISPER_MODEL", "small")
+print(f"Downloading {model_name} model(s) to cache inside the container.")
 
 
 def cache_model(model_to_load):

@@ -65,7 +65,7 @@ git clone https://github.com/MatthiasZepper/whisper-dockerized.git && cd whisper
 docker build . -f Dockerfile.gpu -t whisper_dockerized_gpu
 ```
 
-### Running on Github Actions
+### Building on Github Actions
 
 This repository also contains a Github Action workflow to build the container image.
 
@@ -73,7 +73,7 @@ To run the workflow successfully, you need to fork the repository and create you
 
 The workflow can be dispatched manually in the *Actions* tab. Choose the desired settings in the dialogue and launch the workflow run.
 
-## Command-line usage
+## Running containerized Whisper
 
 To run the containerized version of the Whisper model, invoke the container like so
 
@@ -89,7 +89,9 @@ To simplify the invocation, you can also declare an alias, which can be perpetua
 alias whisper="docker run --rm -itv $(pwd):$(pwd) -w $(pwd) whisper_dockerized_cpu whisper"
 ```
 
-The standard model of `whisper` is `small`, whereas these container images contain `base` by default. Therefore, it is not recommended to omit the `--model` parameter during invocation, since this will result in repeated downloads of the `small` model. For convenience, the `WHISPER_MODEL` build argument is persisted as environmental variable in the container, so that the cached model can be obtained like so:
+The standard model of `whisper` is `small`, therefore the container images also contain the `small` by default. Nonetheless, it is recommended to always specify the `--model` parameter during invocation. If the `--model` parameter is not specified the `small` will be used by default. Models not cached inside the container will be downloaded as required, but in this case the `--rm` flag should be skipped and the modified image saved to prevent repeated downloads of models.  
+
+For convenience, the `WHISPER_MODEL` build argument is persisted as environmental variable in the container, so that the cached model of a container can be obtained like so:
 
 ```bash
 WHISPER_MODEL=$(docker run -it whisper_dockerized:cpu printenv WHISPER_MODEL)
@@ -97,7 +99,7 @@ WHISPER_MODEL=$(docker run -it whisper_dockerized:cpu printenv WHISPER_MODEL)
 
 Subsequently, `$WHISPER_MODEL` can be used as argument to the `--model` parameter.
 
-The following command will transcribe speech in audio files, using the `medium` model:
+The following command will transcribe speech in audio files, using the cached model:
 
     whisper --model "$WHISPER_MODEL" audio.flac audio.mp3 audio.wav 
 
