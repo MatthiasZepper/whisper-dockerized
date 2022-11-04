@@ -24,5 +24,4 @@ RUN poetry install --only main --no-root
 # cache the model of choice to allow for offline use.
 RUN python3 modelloader.py
 
-ENTRYPOINT [ "/bin/bash", "-l", "-c" ]
-CMD ["/usr/local/bin/whisper","--fp16","True","--help"]
+CMD [ "/bin/bash", "-l","-c"]
