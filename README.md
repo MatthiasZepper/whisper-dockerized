@@ -1,6 +1,6 @@
 # Dockerfiles for OpenAI's Whisper model
 
-This repository contains Dockerfiles to containerize OpenAI's [Whisper ASR model](https://github.com/openai/whisper) and it's dependencies [PyTorch](https://pytorch.org/), [HuggingFace Transformers](https://huggingface.co/docs/transformers/index) and [tokenizers](https://pypi.org/project/tokenizers/). [ffmpeg](https://ffmpeg.org/) and [ffmpeg-python](https://github.com/kkroening/ffmpeg-python) are included for media file conversion.
+This repository contains Dockerfiles to containerize OpenAI's [Whisper ASR model](https://github.com/openai/whisper) and it's dependencies [PyTorch](https://pytorch.org/), [HuggingFace Transformers](https://huggingface.co/docs/transformers/index) and [tokenizers](https://pypi.org/project/tokenizers/). For media file conversion [ffmpeg](https://ffmpeg.org/) and [ffmpeg-python](https://github.com/kkroening/ffmpeg-python) are also included.
 
 ## About the Whisper model
 
@@ -89,7 +89,7 @@ To simplify the invocation, you can also declare an alias, which can be perpetua
 alias whisper="docker run --rm -itv $(pwd):$(pwd) -w $(pwd) whisper_dockerized_cpu whisper"
 ```
 
-The standard model of `whisper` is `small`, therefore the container images also contain the `small` by default. Nonetheless, it is recommended to always specify the `--model` parameter during invocation. If the `--model` parameter is not specified the `small` will be used by default. Models not cached inside the container will be downloaded as required, but in this case the `--rm` flag should be skipped and the modified image saved to prevent repeated downloads of models.  
+The standard model of `whisper` is `small`, therefore the container images also contain the `small` by default. Nonetheless, it is recommended to always specify the `--model` parameter during invocation. If the `--model` parameter is not specified the `small` will be used by default. Models not cached inside the container will be downloaded as required. In this case consider skipping the `--rm` flag and save your modified image to prevent repeated downloads of models.  
 
 For convenience, the `WHISPER_MODEL` build argument is persisted as environmental variable in the container, so that the cached model of a container can be obtained like so:
 
@@ -101,19 +101,39 @@ Subsequently, `$WHISPER_MODEL` can be used as argument to the `--model` paramete
 
 The following command will transcribe speech in audio files, using the cached model:
 
-    whisper --model "$WHISPER_MODEL" audio.flac audio.mp3 audio.wav 
+```bash
+whisper --model "$WHISPER_MODEL" <audio.flac audio.mp3 audio.wav>
+```
 
 To transcribe an audio file containing non-English speech, you can specify the language using the `--language` option:
 
-    whisper japanese.wav --language Japanese
-
+```bash
+whisper --language Japanese japanese.wav 
+```
 Adding `--task translate` will translate the speech into English:
 
-    whisper japanese.wav --language Japanese --task translate
+```bash
+whisper --language Japanese --task translate japanese.wav 
+```
 
 Run the following to view all available options:
 
-    whisper --help
+```bash
+whisper --help
+```
+
+## Troubleshooting: Common issues
+
+### 💥 **Torch.storage.UntypedStorage**
+
+```bash
+File "/usr/local/lib/python3.10/dist-packages/torch/serialization.py", line 218, in default_restore_location
+    raise RuntimeError("don't know how to restore data location of "
+RuntimeError: don't know how to restore data location of torch.storage.UntypedStorage (tagged with CPU)
+```
+
+✅  This error is raised when an invalid value is specified for the argument `--device`. In above example, the value was erroneously provided capitalized as `--device "CPU"` instead of `--device "cpu"`. Currently, the only accepted values are `cpu` or `gpu`.
+
 
 ## License
 
