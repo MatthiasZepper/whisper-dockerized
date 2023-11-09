@@ -4,36 +4,35 @@ on:
   workflow_dispatch:
     inputs:
       imagetype:
-        description: 'Build which image?'
+        description: "Build which image?"
         required: false
-        default: 'cpu'
+        default: "cpu"
         type: choice
         options:
-        - 'cpu'
-        - 'gpu'
+          - "cpu"
+          - "gpu"
       cachemodel:
-        description: 'Include a model into image?'
+        description: "Include a model into image?"
         required: false
-        default: 'small'
+        default: "small"
         type: choice
         options:
-        - 'tiny'
-        - 'tiny.en'
-        - 'base'
-        - 'base.en'
-        - 'small'
-        - 'small.en'
-        - 'medium'
-        - 'medium.en'
-        - 'large'
-        - 'all'
-        - 'all.en'
+          - "tiny"
+          - "tiny.en"
+          - "base"
+          - "base.en"
+          - "small"
+          - "small.en"
+          - "medium"
+          - "medium.en"
+          - "large"
+          - "all"
+          - "all.en"
       tag:
-        description: 'Specify a custom tag?'
+        description: "Specify a custom tag?"
         required: false
-        default: 'latest'
+        default: "latest"
         type: string
-
 
 jobs:
   push_to_registry:
@@ -41,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Change repo name to lowercase
         run: |
@@ -55,25 +54,25 @@ jobs:
           cond: ${{ inputs.imagetype == 'cpu' }}
           if_true: "Dockerfile"
           if_false: "Dockerfile.gpu"
-    
+
       - name: Report
         run: echo "Building image from ${{ steps.dockerfilechooser.outputs.value }} and including ${{ inputs.cachemodel }} "
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-            
+
       - name: Push container image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           push: true
           tags: |
