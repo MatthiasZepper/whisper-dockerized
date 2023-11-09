@@ -14,7 +14,7 @@ RUN pip3 install torch torchaudio --extra-index-url https://download.pytorch.org
 WORKDIR "/whisper_asr"
 COPY . "/whisper_asr"
 
-RUN poetry config virtualenvs.create false && poetry lock
+RUN poetry config virtualenvs.create false && poetry lock --no-update
 RUN poetry install --only main --no-root
 
 # cache the model of choice to allow for offline use.

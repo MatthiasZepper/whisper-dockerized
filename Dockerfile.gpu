@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04
+FROM nvidia/cuda:12.2.2-runtime-ubuntu22.04
 
 ARG PYTHON_VERSION=3.10
 ARG WHISPER_MODEL
@@ -18,7 +18,7 @@ RUN ln -s -f /usr/bin/python${PYTHON_VERSION} /usr/bin/python && \
 WORKDIR /whisper_asr
 COPY . /whisper_asr
 
-RUN poetry config virtualenvs.create false && poetry lock
+RUN poetry config virtualenvs.create false && poetry lock --no-update
 RUN poetry install --only main --no-root
 
 # cache the model of choice to allow for offline use.
